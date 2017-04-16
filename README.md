@@ -1,2 +1,2 @@
-# spotifork
+# spotifork 🍴
 Fork a Spotify playlist
