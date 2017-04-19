@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 // spotifork spotify:user:moses_cc:playlist:23v4GpUwnvSENslciz2CkC
 // ask for spotify username and password store in conf
 // get things needed to read from that playlist -> store tracks
@@ -5,7 +7,6 @@
 // add stored tracks
 // done
 
-#!/usr/bin/env node
 'use strict';
 const got = require('got');
 const meow = require('meow');
@@ -14,6 +15,8 @@ const ora = require('ora');
 const inquirer = require('inquirer');
 const Conf = require('conf');
 const updateNotifier = require('update-notifier');
+const pkg = require('./package.json');
+const spinner = ora('Loading ...');
 
 // config file stored in /Users/{home}/Library/Preferences/{project-name}
 const config = new Conf();
@@ -50,13 +53,37 @@ const spotifork = async function spotifork(inputs, flags) {
 			spinner.fail('Failed');
 			console.log(chalk.red(`
 	Oops! Remember to add an artist name!
+
 	Example
+
 		spotifork spotify:user:kabirvirji:playlist:23v4GpUwnvSENslciz2CkC
 		`))
 			return
 	}
 
 	spinner.start();
+
+
+	// create an empty public playlist
+	var options = {
+	  json: true, 
+	  headers: {
+	    'Content-type': 'application/json',
+	    'Authorization' : `Bearer ${config.get('bearer')}`,
+	    'Accept' : 'application/json'
+	  },
+	  body: JSON.stringify({ name: `${playlistName}`, public : true})
+	};
+
+	// error checks after post requests indicate invalid bearer tokens
+
+	// cause use webpage auth to regenerate tokens
+
+	// get playlist tracks using username and uri
+	// put those tracks in array
+	// create an empty public playlist
+	// write tracks in array to playlist
+	// success
 
 
 }
