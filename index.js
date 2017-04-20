@@ -86,7 +86,14 @@ const spotifork = async function spotifork(inputs, flags) {
 	console.log(`https://api.spotify.com/v1/users/${config.get('username')}/playlists/${playlistID}/tracks`)
 	got(`https://api.spotify.com/v1/users/${config.get('username')}/playlists/${playlistID}/tracks`, options1)
 	  .then(response => {
-	    console.log(response)
+	    //console.log(response.body.items)
+	    const responseTracks = response.body.items
+	    let tracks = []
+	    for (var i=0;i<responseTracks.length;i++){
+
+	    	tracks.push(responseTracks[i].track.uri);
+	    }
+	    console.log(tracks)
 		spinner.stop();
 	  })
 
