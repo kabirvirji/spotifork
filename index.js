@@ -47,7 +47,9 @@ const spotifork = async function spotifork(inputs, flags) {
 	// name of the playlist, optional parameter
 	var playlistName = flags['n'];
 	// playlist URI
-	const PlaylistURI = inputs;
+	let PlaylistURI = inputs;
+	const playlistID = inputs.slice(33);
+	console.log(playlistID)
 
 	if (PlaylistURI === undefined){
 			spinner.fail('Failed');
@@ -74,6 +76,35 @@ const spotifork = async function spotifork(inputs, flags) {
 	  },
 	  body: JSON.stringify({ name: `${playlistName}`, public : true})
 	};
+	var options1 = {
+	  json: true, 
+	  headers: {
+	    'Content-type': 'application/json',
+	    'Authorization' : `Bearer ${config.get('bearer')}`
+	  }
+	};
+	console.log(`https://api.spotify.com/v1/users/${config.get('username')}/playlists/${playlistID}/tracks`)
+	got(`https://api.spotify.com/v1/users/${config.get('username')}/playlists/${playlistID}/tracks`, options1)
+	  .then(response => {
+	    console.log(response)
+		spinner.stop();
+	  })
+
+	  .catch(async err => { 
+	  	spinner.fail('Failed');
+	  	config.clear();
+	  	console.log(err);
+	  	console.log(chalk.red(`
+	ERROR: Incorrect username or bearer token
+
+	You might need to update your bearer token
+
+	Generate a new one at https://developer.spotify.com/web-api/console/post-playlists/
+
+	Try again!
+	  $ spotifork <playlist uri>`));
+
+	  });
 
 	// error checks after post requests indicate invalid bearer tokens
 
