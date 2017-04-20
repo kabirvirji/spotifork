@@ -84,11 +84,14 @@ const spotifork = async function spotifork(inputs, flags) {
 	  }
 	};
 	console.log(`https://api.spotify.com/v1/users/${config.get('username')}/playlists/${playlistID}/tracks`)
-	got(`https://api.spotify.com/v1/users/${config.get('username')}/playlists/${playlistID}/tracks`, options1)
+
+	got(`https://api.spotify.com/v1/users/${config.get('username')}/playlists/${playlistID}`, options1)
 	  .then(response => {
 	    //console.log(response.body.items)
-	    const responseTracks = response.body.items
+	    const responseTracks = response.body.tracks.items
 	    let tracks = []
+	    let playlistName = response.body.name;
+	    console.log(playlistName)
 	    for (var i=0;i<responseTracks.length;i++){
 
 	    	tracks.push(responseTracks[i].track.uri);
@@ -96,6 +99,55 @@ const spotifork = async function spotifork(inputs, flags) {
 	    console.log(tracks)
 		spinner.stop();
 	  })
+
+		var options = {
+		  json: true, 
+		  headers: {
+		    'Content-type': 'application/json',
+		    'Authorization' : `Bearer ${config.get('bearer')}`,
+		    'Accept' : 'application/json'
+		  },
+		  body: JSON.stringify({ name: `${playlistName}`, public : true})
+		};
+
+		got.post(`https://api.spotify.com/v1/users/${config.get('username')}/playlists`, options)
+		  .then(response => {
+		    const playlistID = response.body.id;
+
+				// function to add tracks to playlist
+				function populatePlaylist (id, uris) {
+					var url = `https://api.spotify.com/v1/users/${config.get('username')}/playlists/${id}/tracks?uris=${uris}`
+					var options = {
+					  json: true, 
+					  headers: {
+					    'Content-type': 'application/json',
+					    'Authorization' : `Bearer ${config.get('bearer')}`,
+					  }
+					};
+					got.post(url, options)
+					  .then(response => {
+					  	spinner.succeed('Success!');
+					    console.log(chalk.green(`
+	Your playlist is ready! 
+	It's called "${playlistName}"`));
+					  })
+					  .catch(err => { 
+					  	spinner.fail('Failed');
+					  	// don't need to reset config since credentials are correct at this point
+					  	console.log(chalk.red(`
+	There was an error adding songs to the playlist. 
+
+	However, a playlist was created. 
+
+	Please try a different search.`)); 
+					  });
+				}
+
+				populatePlaylist(playlistID, allTracks);
+
+		  })
+
+
 
 	  .catch(async err => { 
 	  	spinner.fail('Failed');
