@@ -45,11 +45,11 @@ function auth() {
 const spotifork = async function spotifork(inputs, flags) {
 
 	// name of the playlist, optional parameter
+	spinner.start();
+	// playlist name is being reset when creating a playlist
 	var playlistName = flags['n'];
 	// playlist URI
 	let PlaylistURI = inputs;
-	const playlistID = inputs.slice(33);
-	console.log(playlistID)
 
 	if (PlaylistURI === undefined){
 			spinner.fail('Failed');
@@ -62,57 +62,49 @@ const spotifork = async function spotifork(inputs, flags) {
 		`))
 			return
 	}
+	const playlistID = inputs.slice(33);
+	console.log(playlistID)
+	
 
-	spinner.start();
-
-
-	// create an empty public playlist
-	var options = {
-	  json: true, 
-	  headers: {
-	    'Content-type': 'application/json',
-	    'Authorization' : `Bearer ${config.get('bearer')}`,
-	    'Accept' : 'application/json'
-	  },
-	  body: JSON.stringify({ name: `${playlistName}`, public : true})
-	};
-	var options1 = {
+	var getPlaylistOptions = {
 	  json: true, 
 	  headers: {
 	    'Content-type': 'application/json',
 	    'Authorization' : `Bearer ${config.get('bearer')}`
 	  }
 	};
-	console.log(`https://api.spotify.com/v1/users/${config.get('username')}/playlists/${playlistID}/tracks`)
 
-	got(`https://api.spotify.com/v1/users/${config.get('username')}/playlists/${playlistID}`, options1)
+	// get playlist
+	got(`https://api.spotify.com/v1/users/${config.get('username')}/playlists/${playlistID}`, getPlaylistOptions)
 	  .then(response => {
-	    //console.log(response.body.items)
 	    const responseTracks = response.body.tracks.items
+	    // holds playlist tracks
 	    let tracks = []
 	    let playlistName = response.body.name;
-	    console.log(playlistName)
+	    console.log(`playlist name ${playlistName}`)
 	    for (var i=0;i<responseTracks.length;i++){
-
 	    	tracks.push(responseTracks[i].track.uri);
 	    }
 	    console.log(tracks)
-		spinner.stop();
-	  })
+	  
 
-		var options = {
+		var createPlaylistOptions = {
 		  json: true, 
 		  headers: {
 		    'Content-type': 'application/json',
 		    'Authorization' : `Bearer ${config.get('bearer')}`,
 		    'Accept' : 'application/json'
 		  },
-		  body: JSON.stringify({ name: `${playlistName}`, public : true})
+		  body: JSON.stringify({ description: `spotiforked from ${config.get('username')}/${playlistName}`, name: `${playlistName}`, public : true})
 		};
 
-		got.post(`https://api.spotify.com/v1/users/${config.get('username')}/playlists`, options)
+		// https://developer.spotify.com/web-api/change-playlist-details/
+
+		// create playlist
+		got.post(`https://api.spotify.com/v1/users/${config.get('username')}/playlists`, createPlaylistOptions)
 		  .then(response => {
-		    const playlistID = response.body.id;
+		  	// playlist ID
+		    const newPlaylistID = response.body.id;
 
 				// function to add tracks to playlist
 				function populatePlaylist (id, uris) {
@@ -143,9 +135,11 @@ const spotifork = async function spotifork(inputs, flags) {
 					  });
 				}
 
-				populatePlaylist(playlistID, allTracks);
+				populatePlaylist(newPlaylistID, tracks);
 
+		  
 		  })
+	})
 
 
 
