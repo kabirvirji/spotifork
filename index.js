@@ -1,12 +1,4 @@
 #!/usr/bin/env node
-
-// spotifork spotify:user:moses_cc:playlist:23v4GpUwnvSENslciz2CkC
-// ask for spotify username and password store in conf
-// get things needed to read from that playlist -> store tracks
-// create empty playlist, but use the same playlist name
-// add stored tracks
-// done
-
 'use strict';
 const got = require('got');
 const meow = require('meow');
@@ -47,7 +39,7 @@ const spotifork = async function spotifork(inputs, flags) {
 	// name of the playlist, optional parameter
 	spinner.start();
 	// playlist name is being reset when creating a playlist
-	var playlistName = flags['n'];
+	let playlistName = flags['n'];
 	// playlist URI
 	let PlaylistURI = inputs;
 
@@ -63,9 +55,7 @@ const spotifork = async function spotifork(inputs, flags) {
 			return
 	}
 	const playlistID = inputs.slice(33);
-	console.log(playlistID)
 	
-
 	var getPlaylistOptions = {
 	  json: true, 
 	  headers: {
@@ -80,13 +70,12 @@ const spotifork = async function spotifork(inputs, flags) {
 	    const responseTracks = response.body.tracks.items
 	    // holds playlist tracks
 	    let tracks = []
-	    let playlistName = response.body.name;
-	    console.log(`playlist name ${playlistName}`)
+	    if (playlistName == undefined){
+	    	let playlistName = response.body.name;
+	    }
 	    for (var i=0;i<responseTracks.length;i++){
 	    	tracks.push(responseTracks[i].track.uri);
 	    }
-	    console.log(tracks)
-	  
 
 		var createPlaylistOptions = {
 		  json: true, 
@@ -97,8 +86,6 @@ const spotifork = async function spotifork(inputs, flags) {
 		  },
 		  body: JSON.stringify({ description: `spotiforked from ${config.get('username')}/${playlistName}`, name: `${playlistName}`, public : true})
 		};
-
-		// https://developer.spotify.com/web-api/change-playlist-details/
 
 		// create playlist
 		got.post(`https://api.spotify.com/v1/users/${config.get('username')}/playlists`, createPlaylistOptions)
@@ -146,7 +133,6 @@ const spotifork = async function spotifork(inputs, flags) {
 	  .catch(async err => { 
 	  	spinner.fail('Failed');
 	  	config.clear();
-	  	console.log(err);
 	  	console.log(chalk.red(`
 	ERROR: Incorrect username or bearer token
 
@@ -162,12 +148,6 @@ const spotifork = async function spotifork(inputs, flags) {
 	// error checks after post requests indicate invalid bearer tokens
 
 	// cause use webpage auth to regenerate tokens
-
-	// get playlist tracks using username and uri
-	// put those tracks in array
-	// create an empty public playlist
-	// write tracks in array to playlist
-	// success
 
 
 }
