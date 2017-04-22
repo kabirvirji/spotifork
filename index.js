@@ -10,6 +10,8 @@ const updateNotifier = require('update-notifier');
 const pkg = require('./package.json');
 const spinner = ora('Loading ...');
 
+// can get playlist image from original and set it to the image in the new need to check if there is one though
+
 // config file stored in /Users/{home}/Library/Preferences/{project-name}
 const config = new Conf();
 
@@ -38,15 +40,15 @@ const spotifork = async function spotifork(inputs, flags) {
 
 	// name of the playlist, optional parameter
 	spinner.start();
-	// playlist name is being reset when creating a playlist
-	let playlistName = flags['n'];
 	// playlist URI
 	let PlaylistURI = inputs;
+
+	let playlistName = flags['n'];
 
 	if (PlaylistURI === undefined){
 			spinner.fail('Failed');
 			console.log(chalk.red(`
-	Oops! Remember to add an artist name!
+	Oops! Remember to add the playlist URI!
 
 	Example
 
@@ -54,7 +56,9 @@ const spotifork = async function spotifork(inputs, flags) {
 		`))
 			return
 	}
-	const playlistID = inputs.slice(33);
+	let URI = inputs.split(":");
+	const playlistID = URI[4];
+	const playlistUser = URI[2];
 	
 	var getPlaylistOptions = {
 	  json: true, 
@@ -65,18 +69,18 @@ const spotifork = async function spotifork(inputs, flags) {
 	};
 
 	// get playlist
-	got(`https://api.spotify.com/v1/users/${config.get('username')}/playlists/${playlistID}`, getPlaylistOptions)
+	got(`https://api.spotify.com/v1/users/${playlistUser}/playlists/${playlistID}`, getPlaylistOptions)
 	  .then(response => {
 	    const responseTracks = response.body.tracks.items
 	    // holds playlist tracks
-	    let tracks = []
-	    if (playlistName == undefined){
-	    	let playlistName = response.body.name;
+		let forkedFrom = response.body.name;
+	    if (playlistName === undefined){
+	    	playlistName = response.body.name;
 	    }
+	    let tracks = []
 	    for (var i=0;i<responseTracks.length;i++){
 	    	tracks.push(responseTracks[i].track.uri);
 	    }
-
 		var createPlaylistOptions = {
 		  json: true, 
 		  headers: {
@@ -84,9 +88,8 @@ const spotifork = async function spotifork(inputs, flags) {
 		    'Authorization' : `Bearer ${config.get('bearer')}`,
 		    'Accept' : 'application/json'
 		  },
-		  body: JSON.stringify({ description: `spotiforked from ${config.get('username')}/${playlistName}`, name: `${playlistName}`, public : true})
+		  body: JSON.stringify({ description: `spotiforked from ${playlistUser}/${forkedFrom}`, name: `${playlistName}`, public : true})
 		};
-
 		// create playlist
 		got.post(`https://api.spotify.com/v1/users/${config.get('username')}/playlists`, createPlaylistOptions)
 		  .then(response => {
@@ -94,7 +97,7 @@ const spotifork = async function spotifork(inputs, flags) {
 		    const newPlaylistID = response.body.id;
 
 				// function to add tracks to playlist
-				function populatePlaylist (id, uris) {
+				function populatePlaylist (id, uris, name) {
 					var url = `https://api.spotify.com/v1/users/${config.get('username')}/playlists/${id}/tracks?uris=${uris}`
 					var options = {
 					  json: true, 
@@ -108,7 +111,7 @@ const spotifork = async function spotifork(inputs, flags) {
 					  	spinner.succeed('Success!');
 					    console.log(chalk.green(`
 	Your playlist is ready! 
-	It's called "${playlistName}"`));
+	It's called "${name}"`));
 					  })
 					  .catch(err => { 
 					  	spinner.fail('Failed');
@@ -122,17 +125,18 @@ const spotifork = async function spotifork(inputs, flags) {
 					  });
 				}
 
-				populatePlaylist(newPlaylistID, tracks);
+				populatePlaylist(newPlaylistID, tracks, playlistName);
 
 		  
 		  })
-	})
+	
 
 
 
 	  .catch(async err => { 
 	  	spinner.fail('Failed');
 	  	config.clear();
+	  	console.log(err)
 	  	console.log(chalk.red(`
 	ERROR: Incorrect username or bearer token
 
@@ -144,7 +148,7 @@ const spotifork = async function spotifork(inputs, flags) {
 	  $ spotifork <playlist uri>`));
 
 	  });
-
+})
 	// error checks after post requests indicate invalid bearer tokens
 
 	// cause use webpage auth to regenerate tokens
