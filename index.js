@@ -124,7 +124,6 @@ const spotifork = async function spotifork(inputs, flags) {
 	Please try a different search.`)); 
 					  });
 				}
-
 				populatePlaylist(newPlaylistID, tracks, playlistName);
 		  })
 
@@ -143,6 +142,22 @@ const spotifork = async function spotifork(inputs, flags) {
 	  $ spotifork <playlist uri>`));
 
 	  });
+	})
+
+	.catch(err => {
+		spinner.fail('Failed');
+		config.clear()
+	  	console.log(chalk.red(`
+	ERROR: Incorrect username or bearer token
+
+	You might need to update your bearer token
+
+	Generate a new one at https://developer.spotify.com/web-api/console/post-playlists/
+
+	Remember to select the suggested scopes!
+
+	Try again!
+	  $ spotifork <playlist uri>`));
 	})
 
 }
