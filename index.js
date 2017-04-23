@@ -126,12 +126,7 @@ const spotifork = async function spotifork(inputs, flags) {
 				}
 
 				populatePlaylist(newPlaylistID, tracks, playlistName);
-
-		  
 		  })
-	
-
-
 
 	  .catch(async err => { 
 	  	spinner.fail('Failed');
@@ -148,11 +143,7 @@ const spotifork = async function spotifork(inputs, flags) {
 	  $ spotifork <playlist uri>`));
 
 	  });
-})
-	// error checks after post requests indicate invalid bearer tokens
-
-	// cause use webpage auth to regenerate tokens
-
+	})
 
 }
 
@@ -176,7 +167,6 @@ const cli = meow(chalk.cyan(`
     }
 }
 );
-
 
 updateNotifier({pkg}).notify();
 

@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "Fork a Spotify playlist 🍴",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kabirvirji/spotifork.git"
@@ -14,12 +11,12 @@
     "spotifork": "index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "kabirvirji",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/kabirvirji/spotifork/issues"
   },
-  "homepage": "https://github.com/kabirvirji/spotifork#readme",
+  "homepage": "https://github.com/kabirvirji/spotifork",
   "dependencies": {
     "chalk": "^1.1.3",
     "conf": "^0.12.0",
