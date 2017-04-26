@@ -2,6 +2,8 @@
 
 > Fork a Spotify playlist
 
+![](spotifork.gif)
+
 ## Install
 `$ npm install -g spotifork` <br><br>
 **Note:** Node version 7.7.1+ required. `$ node -v` to check which version you have installed. The latest version can be downloaded [here](https://nodejs.org/en/)
@@ -10,6 +12,8 @@
 `$ spotifork <playlist URI>`
 
 The program will then prompt you for your Spotify username and bearer token. <br>
+
+You can get the playlist URI by going to **share** on whichever Spotify platform you're on. <br>
 
 You can get the bearer token here: https://developer.spotify.com/web-api/console/post-playlists/ <br>
 Click **GET OAUTH TOKEN** and make sure to check *playlist-modify-public* 
