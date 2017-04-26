@@ -2,7 +2,7 @@
 
 > Fork a Spotify playlist
 
-![](spotifork.gif)
+![](spotifork-demo.gif)
 
 ## Install
 `$ npm install -g spotifork` <br><br>
