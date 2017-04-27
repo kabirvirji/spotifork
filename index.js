@@ -179,6 +179,7 @@ const cli = meow(chalk.cyan(`
 }
 );
 
+// to notify users about updates
 updateNotifier({pkg}).notify();
 
 (async () => {
