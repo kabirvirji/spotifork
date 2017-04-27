@@ -1,6 +1,6 @@
 {
   "name": "spotifork",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Fork a Spotify playlist 🍴",
   "main": "index.js",
   "repository": {
