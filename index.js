@@ -10,8 +10,6 @@ const updateNotifier = require('update-notifier');
 const pkg = require('./package.json');
 const spinner = ora('Loading ...');
 
-// can get playlist image from original and set it to the image in the new need to check if there is one though
-
 // config file stored in /Users/{home}/Library/Preferences/{project-name}
 const config = new Conf();
 
@@ -38,11 +36,10 @@ function auth() {
 
 const spotifork = async function spotifork(inputs, flags) {
 
-	// name of the playlist, optional parameter
 	spinner.start();
 	// playlist URI
 	let PlaylistURI = inputs;
-
+	// name of the playlist, optional parameter
 	let playlistName = flags['n'];
 
 	if (PlaylistURI === undefined){
@@ -72,15 +69,12 @@ const spotifork = async function spotifork(inputs, flags) {
 	got(`https://api.spotify.com/v1/users/${playlistUser}/playlists/${playlistID}`, getPlaylistOptions)
 	  .then(response => {
 	    const responseTracks = response.body.tracks.items
-	    // holds playlist tracks
 		let forkedFrom = response.body.name;
 	    if (playlistName === undefined){
 	    	playlistName = response.body.name;
 	    }
-	    let tracks = []
-	    for (var i=0;i<responseTracks.length;i++){
-	    	tracks.push(responseTracks[i].track.uri);
-	    }
+	    // holds playlist tracks
+		let tracks = responseTracks.map(responseTracks[i] => responseTracks[i].track.uri)
 		var createPlaylistOptions = {
 		  json: true, 
 		  headers: {
@@ -93,7 +87,7 @@ const spotifork = async function spotifork(inputs, flags) {
 		// create playlist
 		got.post(`https://api.spotify.com/v1/users/${config.get('username')}/playlists`, createPlaylistOptions)
 		  .then(response => {
-		  	// playlist ID
+		  	// get playlist ID
 		    const newPlaylistID = response.body.id;
 
 				// function to add tracks to playlist
@@ -110,7 +104,7 @@ const spotifork = async function spotifork(inputs, flags) {
 					  .then(response => {
 					  	spinner.succeed('Success!');
 					    console.log(chalk.green(`
-	Your playlist is ready! 
+	Your playlist is ready!
 	It's called "${name}"`));
 					  })
 					  .catch(err => { 
@@ -148,13 +142,15 @@ const spotifork = async function spotifork(inputs, flags) {
 		spinner.fail('Failed');
 		config.clear()
 	  	console.log(chalk.red(`
-	ERROR: Incorrect username or bearer token
+	ERROR: Incorrect username, bearer token, or URI
 
 	You might need to update your bearer token
 
 	Generate a new one at https://developer.spotify.com/web-api/console/post-playlists/
 
 	Remember to select the suggested scopes!
+
+	Also, make sure you entered a valid Spotify URI!
 
 	Try again!
 	  $ spotifork <playlist uri>`));

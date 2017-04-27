@@ -3,6 +3,7 @@
 > Fork a Spotify playlist
 
 ![](spotifork-demo.gif)
+<!-- need new gif with name parameter -->
 
 ## Install
 `$ npm install -g spotifork` <br><br>
@@ -17,6 +18,10 @@ You can get the playlist URI by going to **share** on whichever Spotify platform
 
 You can get the bearer token here: https://developer.spotify.com/web-api/console/post-playlists/ <br>
 Click **GET OAUTH TOKEN** and make sure to check *playlist-modify-public* 
+
+## Optional Parameters
+
+`-n` Name tag
 
 `$ spotifork --help`
 
@@ -36,3 +41,5 @@ Usage
 
     For more information visit https://github.com/kabirvirji/spotifork
 ```
+
+![](spotifork-playlist.png)
