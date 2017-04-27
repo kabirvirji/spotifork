@@ -23,7 +23,7 @@ Click **GET OAUTH TOKEN** and make sure to check *playlist-modify-public*
 
 `-n` to specify the new forked playlist name
 
-<br><br>
+<br>
 
 `$ spotifork --help`
 
