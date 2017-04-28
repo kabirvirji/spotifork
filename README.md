@@ -29,7 +29,7 @@ Click **GET OAUTH TOKEN** and make sure to check *playlist-modify-public*
 
 ```
 Usage
-      $ singlespotify "<playlist URI>"
+      $ spotifork "<playlist URI>"
       ? Enter your Spotify username <username>
       ? Enter your Spotify bearer token <bearer>
 
