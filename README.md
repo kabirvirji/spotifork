@@ -5,6 +5,10 @@
 ![](spotifork-demo.gif)
 <!-- need new gif with name parameter -->
 
+<br>
+Spotifork creates an identical playlist from another user's playlist under your name. Just like forking on GitHub! You can then add/remove songs as you please.
+<br>
+
 ## Install
 `$ npm install -g spotifork` <br><br>
 **Note:** Node version 7.7.1+ required. `$ node -v` to check which version you have installed. The latest version can be downloaded [here](https://nodejs.org/en/)
