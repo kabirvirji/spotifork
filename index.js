@@ -74,7 +74,7 @@ const spotifork = async function spotifork(inputs, flags) {
 	    	playlistName = response.body.name;
 	    }
 	    // holds playlist tracks
-		let tracks = responseTracks.map(responseTracks[i] => responseTracks[i].track.uri)
+		let tracks = responseTracks.map(responseTrack => responseTracks[i].track.uri)
 		var createPlaylistOptions = {
 		  json: true, 
 		  headers: {
