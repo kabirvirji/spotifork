@@ -54,7 +54,6 @@ const spotifork = async function spotifork(inputs, flags) {
 			return
 	}
 	let URI = inputs.split(":");
-	console.log(URI)
 	const playlistID = URI[2];
 	
 	var getPlaylistOptions = {
@@ -68,9 +67,7 @@ const spotifork = async function spotifork(inputs, flags) {
 	// get playlist
 	got(`https://api.spotify.com/v1/playlists/${playlistID}/tracks`, getPlaylistOptions)
 	  .then(response => {
-
 		let responseTracks = response.body.items
-
 	    if (playlistName === undefined){
 	    	playlistName = "🍴";
 	    }
