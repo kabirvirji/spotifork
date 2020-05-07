@@ -5,7 +5,7 @@
 ![](spotifork-demo.gif)
 <!-- need new gif with name parameter -->
 
-**NOTICE:** Spotify made some changes to their API since this was made, so certain parts might not work. Will fix ASAP
+> **NOTE:** Since I began this project Spotify's API has changed (for one, see the difference in URIs now). However, I have implemented a quick fix to get spotifork working again
 
 <br>
 Spotifork creates an identical playlist from another user's playlist under your name. Just like forking on GitHub! You can then add/remove songs as you please.
