@@ -54,8 +54,8 @@ const spotifork = async function spotifork(inputs, flags) {
 			return
 	}
 	let URI = inputs.split(":");
-	const playlistID = URI[4];
-	const playlistUser = URI[2];
+	console.log(URI)
+	const playlistID = URI[2];
 	
 	var getPlaylistOptions = {
 	  json: true, 
@@ -66,12 +66,13 @@ const spotifork = async function spotifork(inputs, flags) {
 	};
 
 	// get playlist
-	got(`https://api.spotify.com/v1/users/${playlistUser}/playlists/${playlistID}`, getPlaylistOptions)
+	got(`https://api.spotify.com/v1/playlists/${playlistID}/tracks`, getPlaylistOptions)
 	  .then(response => {
-	    const responseTracks = response.body.tracks.items
-		let forkedFrom = response.body.name;
+
+		let responseTracks = response.body.items
+
 	    if (playlistName === undefined){
-	    	playlistName = response.body.name;
+	    	playlistName = "🍴";
 	    }
 	    // holds playlist tracks
 		let tracks = responseTracks.map(responseTrack => responseTrack.track.uri)
@@ -82,7 +83,7 @@ const spotifork = async function spotifork(inputs, flags) {
 		    'Authorization' : `Bearer ${config.get('bearer')}`,
 		    'Accept' : 'application/json'
 		  },
-		  body: JSON.stringify({ description: `spotiforked from ${playlistUser}/${forkedFrom}`, name: `${playlistName}`, public : true})
+		  body: JSON.stringify({ description: `spotiforked using https://github.com/kabirvirji/spotifork`, name: `${playlistName}`, public : true})
 		};
 		// create playlist
 		got.post(`https://api.spotify.com/v1/users/${config.get('username')}/playlists`, createPlaylistOptions)
